@@ -1,5 +1,7 @@
 (defpackage :pd-writer
-  (:use :common-lisp))
+  (:use :common-lisp)
+  (:export :with-patch
+           :port))
 
 (in-package :pd-writer)
 
@@ -173,97 +175,3 @@
     (process-node-args n stuff)
     (add-node n)
     n))
-
-(defmacro node-template (name)
-  `(defun ,name (&rest args)
-     (let ((n (make-node :name (format nil "~a" ',name))))
-       (process-node-args n args)
-       (add-node n)
-       n)))
-
-(defmacro mappem (names)
-  `(progn
-     ,@(mapcar (lambda (name) `(node-template ,name))
-               names)))
-
-;; (mappem (+~
-;;          -~
-;;          *~
-;;          /~
-;;          bang
-;;          b
-;;          float
-;;          f
-;;          symbol
-;;          int
-;;          i
-;;          send
-;;          s
-;;          receive
-;;          r
-;;          select
-;;          route
-;;          pack
-;;          unpack
-;;          trigger
-;;          t
-;;          spigot
-;;          moses
-;;          until
-;;          print
-;;          makefilename
-;;          change
-;;          swap
-;;          value
-;;          list
-;;          ;; -------- time --------
-;;          delay
-;;          metro
-;;          line
-;;          timer
-;;          cputime
-;;          realtime
-;;          pipe
-;;          ;; +
-;;          ;; -
-;;          ;; *
-;;          ;; /
-;;          ;; pow
-;;          ))
-
-
-
-;; --------------------------------------------------------------------------------
-;; usage
-;;
-
-;; rules:
-;; 
-;; - literals (strings, numbers, symbols) are concatenated verbatim to the object literal.
-;;   (this is how pd initializes objects with arguments)
-;; 
-;; - anything else (nil, nodes, ports) is connected to the input ports of the object.
-;; 
-;; - to connect to a specific input port, you have to put the connectee into the corresponding argument position, e.g. to connect to the second port while skipping the first:
-;;   (+~ nil (osc~ 100))
-;;   and with initialization arguments:
-;;   (+ 10 20 nil (number 20))
-
-(with-patch "~/pd/pd-writer/test.pd"
-  ;; (let ((out (+~ (osc~ 100)
-  ;;                (osc~ 200))))
-  ;;   (dac~ out
-  ;;         out))
-  (dac~ (+~ 100 nil (port 1 (trigger 'b 'b 'b)))
-        (+~ 789 (osc~ (osc~ 123))))
-  (+~ 123)
-  )
-
-
-;; (with-patch "test.pd"
-;;   (let ((out (pd +~
-;;                  (pd osc~ 100)
-;;                  (pd osc~ 200))))
-;;     (pd dac~
-;;         out
-;;         out)))
