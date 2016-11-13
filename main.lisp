@@ -10,18 +10,22 @@
 ;; --------------------------------------------------------------------------------
 ;; data
 ;; 
+
+;; idea: use types (object, message, floatatom, symbolatom) for different node templates
+;; (maybe objects that all implement a 'template'-message?)
+
 (defstruct node
   (name)                  ; string representation of object
-  (init-args)             ; string representation of initial arguments
-  (id (gensym))       ; unique symbol (in lisp)
-  (index)                 ; unique number (in patch)
+  (init-args)             ; string representation of initial arguments (only object-nodes)
+  (id (gensym))           ; unique symbol (identifier in lisp)
+  (index)                 ; unique number (occurence in patch file)
   )
 
 (defstruct connection
-  (out-id)                          ; gensym of source node
-  (out-port)                           ; index of output port
-  (in-id)                           ; gensym of target node
-  (in-port)                            ; index of input port
+  (out-id)                              ; gensym of source node
+  (out-port)                            ; index of output port
+  (in-id)                               ; gensym of target node
+  (in-port)                             ; index of input port
   )
 
 (defstruct port
@@ -32,16 +36,32 @@
 ;; pd
 ;; 
 (defun to-string (any)
-  (format nil "~s" any))
+  (format nil "~a" any))
+
+;; idea: on the templating level this is not so cool – the node-struct would have to cover all fields of all objects ... :(
+
+;; (defun object-node-template (n)
+;;   (concatenate 'string
+;;                "#X obj 0 0 "
+;;                (node-name n) " "
+;;                (node-init-args n)
+;;                ";"
+;;                (string #\newline)))
+
+;; (defun message-node-template (n)
+;;   (concatenate 'string
+;;                "#X msg 0 0 "
+;;                (node-init-args n)
+;;                ";"
+;;                (string #\newline)))
 
 (defun write-node (n)
-  (princ (concatenate 'string
-                      "#X obj 0 0 "
-                      (node-name n) " "
-                      (node-init-args n)
-                      ";"
-                      (string #\newline))
-         nil))
+  (concatenate 'string
+               "#X obj 0 0 "
+               (node-name n) " "
+               (node-init-args n)
+               ";"
+               (string #\newline)))
 
 (defun write-connection (c)
   (let ((out (find (connection-out-id c) *nodes* :key #'node-id))
@@ -154,6 +174,65 @@
     (add-node n)
     n))
 
+(defmacro node-template (name)
+  `(defun ,name (&rest args)
+     (let ((n (make-node :name (format nil "~a" ',name))))
+       (process-node-args n args)
+       (add-node n)
+       n)))
+
+(defmacro mappem (names)
+  `(progn
+     ,@(mapcar (lambda (name) `(node-template ,name))
+               names)))
+
+;; (mappem (+~
+;;          -~
+;;          *~
+;;          /~
+;;          bang
+;;          b
+;;          float
+;;          f
+;;          symbol
+;;          int
+;;          i
+;;          send
+;;          s
+;;          receive
+;;          r
+;;          select
+;;          route
+;;          pack
+;;          unpack
+;;          trigger
+;;          t
+;;          spigot
+;;          moses
+;;          until
+;;          print
+;;          makefilename
+;;          change
+;;          swap
+;;          value
+;;          list
+;;          ;; -------- time --------
+;;          delay
+;;          metro
+;;          line
+;;          timer
+;;          cputime
+;;          realtime
+;;          pipe
+;;          ;; +
+;;          ;; -
+;;          ;; *
+;;          ;; /
+;;          ;; pow
+;;          ))
+
+
+
 ;; --------------------------------------------------------------------------------
 ;; usage
 ;;
@@ -170,7 +249,7 @@
 ;;   and with initialization arguments:
 ;;   (+ 10 20 nil (number 20))
 
-(with-patch "test.pd"
+(with-patch "~/pd/pd-writer/test.pd"
   ;; (let ((out (+~ (osc~ 100)
   ;;                (osc~ 200))))
   ;;   (dac~ out
