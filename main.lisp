@@ -71,15 +71,14 @@
     (cond ((or (null out)
                (null in))
            (error "wow, no node found!")))
-    (princ (concatenate 'string
-                        "#X connect "
-                        (to-string (node-index out)) " "
-                        (to-string (connection-out-port c)) " "
-                        (to-string (node-index in)) " "
-                        (to-string (connection-in-port c))
-                        ";"
-                        (string #\newline))
-           nil)))
+    (concatenate 'string
+                 "#X connect "
+                 (to-string (node-index out)) " "
+                 (to-string (connection-out-port c)) " "
+                 (to-string (node-index in)) " "
+                 (to-string (connection-in-port c))
+                 ";"
+                 (string #\newline))))
 
 (defun write-patch ()
     (with-open-file (f *patch* :direction :output :if-exists :supersede)
@@ -90,8 +89,7 @@
       ;; ... connections
       (mapcar (lambda (c) (princ (write-connection c) f))
               *connections*)
-      ))
-
+      t))
 
 (defun process-node-args (n args)
   (let ((port 0))
