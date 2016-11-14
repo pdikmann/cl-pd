@@ -1,10 +1,9 @@
-(load "main.lisp")
-(load "objects.lisp")
+(load "init.lisp")
 
 (defpackage :pd-usage
   (:use :common-lisp
-        :pd-writer
-        :pd-objects ; aka pd
+        ;;:pd-writer ; aka pdx
+        ;;:pd-objects ; aka pd
         ))
 
 (in-package :pd-usage)
@@ -41,44 +40,22 @@
                       (detuned (first lst)))
               (cascade (rest lst)))))
 
-(with-patch "~/pd/pd-writer/cascade.pd"
+(pdx:with-patch "~/pd/pd-writer/cascade.pd"
   (let* ((freqs '(100 200 400 800 1600 3200 6400))
          (out (pd::*~ (/ 1.0 (length freqs)) (cascade (reverse freqs)))))
     (pd::dac~ out out)))
 
-(with-patch "~/pd/pd-writer/cascade2.pd"
+(pdx:with-patch "~/pd/pd-writer/cascade2.pd"
   (let* ((freqs '(100 120 130 135 137))
          (out (pd::*~ (/ 1.0 (length freqs)) (cascade (reverse freqs)))))
     (pd::dac~ out out)))
 
-
-(with-patch "~/pd/pd-writer/test.pd"
-  ;; (let ((out (+~ (osc~ 100)
-  ;;                (osc~ 200))))
-  ;;   (dac~ out
-  ;;         out))
-
-  ;; (dac~ (+~ 100 nil (port 1 (trigger 'b 'b 'b)))
-  ;;       (+~ 789 (osc~ (osc~ 123))))
-  ;; (+~ 123)
+(pdx:with-patch "~/pd/pd-writer/test.pd"
   (let* ((my-adder (pd::+ 1))
          (my-flt (pd::float 0
                             (pd::metro 500
                                        (pd::loadbang))
                             my-adder)))
-    (pd-writer::process-node-args my-adder (list my-flt)) ;; make this more beautiful please
+    (pdx:connect my-adder (list my-flt)) ;; make this more beautiful please
     (pd::print "yeah" my-flt)
-    (pd::outlet my-flt))
-
-  ;; (pd::< (pd::float 100)
-  ;;       (pd::float 200 (pd::bang)))
-  )
-
-
-;; (with-patch "test.pd"
-;;   (let ((out (pd +~
-;;                  (pd osc~ 100)
-;;                  (pd osc~ 200))))
-;;     (pd dac~
-;;         out
-;;         out)))
+    (pd::outlet my-flt)))

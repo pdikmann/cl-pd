@@ -1,38 +1,21 @@
 (defpackage :pd-writer
-  (:use :common-lisp)
+  (:nicknames :pdx)
+  (:use :common-lisp
+        :pd-structs
+        :pd-ranking)
   (:export :with-patch
-           :port))
+           :port
+           :connect))
 
 (in-package :pd-writer)
-
-(defparameter *patch* "")
-(defparameter *nodes* nil)
-(defparameter *connections* nil)
+;;(unintern :node)
 
 ;; --------------------------------------------------------------------------------
 ;; data
 ;; 
-
-;; idea: use types (object, message, floatatom, symbolatom) for different node templates
-;; (maybe objects that all implement a 'template'-message?)
-
-(defstruct node
-  (name)                  ; string representation of object
-  (init-args)             ; string representation of initial arguments (only object-nodes)
-  (id (gensym))           ; unique symbol (identifier in lisp)
-  (index)                 ; unique number (occurence in patch file)
-  )
-
-(defstruct connection
-  (out-id)                              ; gensym of source node
-  (out-port)                            ; index of output port
-  (in-id)                               ; gensym of target node
-  (in-port)                             ; index of input port
-  )
-
-(defstruct port
-  (number)
-  (node))
+(defparameter *patch* "")
+(defparameter *nodes* nil)
+(defparameter *connections* nil)
 
 ;; --------------------------------------------------------------------------------
 ;; pd
@@ -59,7 +42,9 @@
 
 (defun write-node (n)
   (concatenate 'string
-               "#X obj 0 0 "
+               "#X obj "
+               (to-string (node-x n)) " "
+               (to-string (node-y n)) " "
                (node-name n) " "
                (node-init-args n)
                ";"
@@ -81,17 +66,46 @@
                  (string #\newline))))
 
 (defun write-patch ()
-    (with-open-file (f *patch* :direction :output :if-exists :supersede)
-      (format f "#N canvas 0 0 512 512 10;~%") ; patch init
-      ;; ... nodes
-      (mapcar (lambda (n) (princ (write-node n) f))
-              (reverse *nodes*))
-      ;; ... connections
-      (mapcar (lambda (c) (princ (write-connection c) f))
-              *connections*)
-      t))
+  (with-open-file (f *patch* :direction :output :if-exists :supersede)
+    (format f "#N canvas 0 0 512 512 10;~%") ; patch init
+    ;; ... nodes
+    (mapcar (lambda (n)
+              (princ (write-node n) f))
+            (reverse (rank *nodes* *connections*)))
+    ;; ... connections
+    (mapcar (lambda (c)
+              (princ (write-connection c) f))
+            *connections*)
+    t))
 
-(defun process-node-args (n args)
+(defun add-connection (out-id out-port in-id in-port)
+  (let ((c (make-connection :out-id out-id
+                            :out-port out-port
+                            :in-id in-id
+                            :in-port in-port)))
+    (push c *connections*)))
+
+(defun add-node (n)
+  ;; this could incorporate the duplication between node definitions
+  (setf (node-index n) (length *nodes*))
+  (push n *nodes*))
+
+;; --------------------------------------------------------------------------------
+;; user-facing
+;; 
+(defmacro with-patch (patch-name &rest form)
+  `(progn
+    (setq *patch* ,patch-name)
+    (setq *nodes* nil)
+    (setq *connections* nil)
+    ,@form
+    (write-patch)))
+
+(defun port (number node)
+  (make-port :number number
+             :node node))
+
+(defun connect (n args)
   (let ((port 0))
     (mapcar (lambda (arg)
               (cond
@@ -113,63 +127,3 @@
                  )))
             args))
   n)
-
-;; --------------------------------------------------------------------------------
-;; user-facing
-;; 
-(defun add-connection (out-id out-port in-id in-port)
-  (let ((c (make-connection :out-id out-id
-                            :out-port out-port
-                            :in-id in-id
-                            :in-port in-port)))
-    (push c *connections*)))
-
-(defun add-node (n)
-  ;; this could incorporate the duplication between node definitions
-  (setf (node-index n) (length *nodes*))
-  (push n *nodes*))
-
-(defmacro with-patch (patch-name &rest form)
-  `(progn
-    (setq *patch* ,patch-name)
-    (setq *nodes* nil)
-    (setq *connections* nil)
-    ,@form
-    (write-patch)))
-
-(defun port (number node)
-  (make-port :number number
-             :node node))
-
-;; --------------------------------------------------------------------------------
-;; node library
-;;
-(defun osc~ (freq)
-  (let ((n (make-node :name "osc~")))
-    (if (node-p freq)
-        (add-connection (node-id freq) 0 ; maybe a wrapper object that you can ask?
-                        (node-id n) 0)
-        (setf (node-init-args n)
-              (to-string freq))   ; assume number
-        )
-    (add-node n)
-    n))
-
-(defun +~ (&rest args)
-  (let ((n (make-node :name "+~")))
-    ;; improve: init literals and connections should use independent port indices
-    (process-node-args n args)
-    (add-node n)
-    n))
-
-(defun dac~ (&rest args)
-  (let ((n (make-node :name "dac~")))
-    (process-node-args n args)
-    (add-node n)
-    n))
-
-(defun trigger (&rest stuff)
-  (let ((n (make-node :name "t")))
-    (process-node-args n stuff)
-    (add-node n)
-    n))
