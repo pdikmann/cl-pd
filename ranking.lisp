@@ -1,6 +1,14 @@
 (defpackage :pd-ranking
   (:use :common-lisp
         :pd-structs)
+  (:import-from :pd-structs
+                :node-name
+                :node-init-args
+                :node-id
+                :node-index
+                :node-rank
+                :node-x
+                :node-y)
   (:export rank))
 
 (in-package :pd-ranking)
@@ -32,10 +40,12 @@
            (setf (node-rank n2) 1))
           ;; target node not ranked: put target node below source
           ((null (node-rank n2))
-           (setf (node-rank n2) (1+ (node-rank n1))))
+           (setf (node-rank n2)
+                 (1+ (node-rank n1))))
           ;; source node not ranked: put source node above source
           ((null (node-rank n1))
-           (setf (node-rank n1) (1- (node-rank n2)))))
+           (setf (node-rank n1)
+                 (1- (node-rank n2)))))
         ;; update hash-table
         (setf (gethash (connection-out-id c) nodes-hash) n1)
         (setf (gethash (connection-in-id c) nodes-hash) n2)

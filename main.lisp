@@ -3,6 +3,14 @@
   (:use :common-lisp
         :pd-structs
         :pd-ranking)
+  (:import-from :pd-structs
+                :node-name
+                :node-init-args
+                :node-id
+                :node-index
+                :node-rank
+                :node-x
+                :node-y)
   (:export :with-patch
            :port
            :connect))
@@ -20,35 +28,6 @@
 ;; --------------------------------------------------------------------------------
 ;; pd
 ;; 
-(defun to-string (any)
-  (format nil "~a" any))
-
-;; idea: on the templating level this is not so cool – the node-struct would have to cover all fields of all objects ... :(
-
-;; (defun object-node-template (n)
-;;   (concatenate 'string
-;;                "#X obj 0 0 "
-;;                (node-name n) " "
-;;                (node-init-args n)
-;;                ";"
-;;                (string #\newline)))
-
-;; (defun message-node-template (n)
-;;   (concatenate 'string
-;;                "#X msg 0 0 "
-;;                (node-init-args n)
-;;                ";"
-;;                (string #\newline)))
-
-(defun write-node (n)
-  (concatenate 'string
-               "#X obj "
-               (to-string (node-x n)) " "
-               (to-string (node-y n)) " "
-               (node-name n) " "
-               (node-init-args n)
-               ";"
-               (string #\newline)))
 
 (defun write-connection (c)
   (let ((out (find (connection-out-id c) *nodes* :key #'node-id))

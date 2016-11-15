@@ -2,7 +2,8 @@
   (:nicknames :pd)
   (:use :common-lisp)
   (:import-from :pd-structs
-                :make-node)
+                :node
+                :object-node)
   (:import-from :pd-writer
                 :connect
                 :add-node)
@@ -277,7 +278,8 @@
 
 (defmacro node-template (name)
   `(defun ,name (&rest args)
-     (let ((n (make-node :name (format nil "~(~a~)" ',name))))
+     (let ((n (make-instance 'object-node
+                             :name (format nil "~(~a~)" ',name))))
        (connect n args)
        (add-node n)
        n)))
