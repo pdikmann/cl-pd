@@ -1,14 +1,14 @@
 (defpackage :pd-ranking
   (:use :common-lisp
         :pd-structs)
-  (:import-from :pd-structs
-                :node-name
-                :node-init-args
-                :node-id
-                :node-index
-                :node-rank
-                :node-x
-                :node-y)
+  ;; (:import-from :pd-structs
+  ;;               :node-name
+  ;;               :node-init-args
+  ;;               :node-id
+  ;;               :node-index
+  ;;               :node-rank
+  ;;               :node-x
+  ;;               :node-y)
   (:export rank))
 
 (in-package :pd-ranking)
@@ -56,6 +56,7 @@
   "determine smallest node-rank in nodes-hash"
   (let ((n most-positive-fixnum))
     (maphash (lambda (k v)
+               (declare (ignore k))
                (when (< (node-rank v) n)
                  (setf n (node-rank v))))
              nodes-hash)

@@ -1,5 +1,3 @@
-(load "init.lisp")
-
 (defpackage :pd-usage
   (:use :common-lisp
         ;;:pd-writer ; aka pdx
@@ -19,10 +17,21 @@
 ;; 
 ;; - anything else (nil, nodes, ports) is connected to the input ports of the object.
 ;; 
-;; - to connect to a specific input port, you have to put the connectee into the corresponding argument position, e.g. to connect to the second port while skipping the first:
+;; - to connect to a specific input port, you have to put the connectee
+;;   into the corresponding argument position,
+;;   e.g. to connect to the second port while skipping the first:
+;;   
 ;;   (+~ nil (osc~ 100))
+;;   
 ;;   and with initialization arguments:
-;;   (+ 10 20 nil (number 20))
+;;   
+;;   (+~ 10 20 nil (number 20))
+;;
+;; - more complex objects use keyword parameters, e.g.
+;;
+;;  (hsl :width 100 :height 15 ...)
+
+(load "pd-init.lisp")
 
 (defun detuned (freq)
   (pd::osc~

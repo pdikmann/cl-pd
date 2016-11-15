@@ -1,4 +1,4 @@
-(defpackage :pd-objects
+(defpackage :pd-nodes
   (:nicknames :pd)
   (:use :common-lisp)
   (:import-from :pd-structs
@@ -38,7 +38,7 @@
            :set
            :append))
 
-(in-package :pd-objects)
+(in-package :pd-nodes)
 
 (defparameter *object-nodes*
   '( ;; -------- general --------
@@ -276,7 +276,7 @@
     bob~
     ))
 
-(defmacro node-template (name)
+(defmacro object-node-template (name)
   `(defun ,name (&rest args)
      (let ((n (make-instance 'object-node
                              :name (format nil "~(~a~)" ',name))))
@@ -284,9 +284,9 @@
        (add-node n)
        n)))
 
-(defmacro map-templates ()
+(defmacro map-object-nodes ()
   `(progn
-     ,@(mapcar (lambda (name) `(node-template ,name))
+     ,@(mapcar (lambda (name) `(object-node-template ,name))
                *object-nodes*)))
 
-(map-templates)
+(map-object-nodes)
