@@ -59,12 +59,13 @@
          (out (pd::*~ (/ 1.0 (length freqs)) (cascade (reverse freqs)))))
     (pd::dac~ out out)))
 
-(pdx:with-patch "~/pd/pd-writer/test.pd"
+(pdx:with-patch "test.pd"
   (let* ((my-adder (pd::+ 1))
          (my-flt (pd::float 0
                             (pd::metro 500
                                        (pd::loadbang))
                             my-adder)))
-    (pdx:connect my-adder (list my-flt)) ;; make this more beautiful please
-    (pd::print "yeah" my-flt)
+    (pdx:connect my-adder (list my-flt))
+    (pd::print "yeah"
+               (pd::msg "message says hello \\$1" my-flt))
     (pd::outlet my-flt)))

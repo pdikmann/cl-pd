@@ -3,7 +3,8 @@
   (:use :common-lisp)
   (:import-from :pd-structs
                 :node
-                :object-node)
+                :object-node
+                :msg-node)
   (:import-from :pd-writer
                 :connect
                 :add-node)
@@ -290,3 +291,12 @@
                *object-nodes*)))
 
 (map-object-nodes)
+
+;; --------------------------------------------------------------------------------
+;; msg node
+;; 
+(defun msg (&rest args)
+  (let ((n (make-instance 'msg-node)))
+    (connect n args)
+    (add-node n)
+    n))

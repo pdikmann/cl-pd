@@ -1,13 +1,13 @@
 (defpackage :pd-structs
   (:use :common-lisp)
   (:export :write-node
-           :node-p
            :to-string
            ;; --------------------------------
            :node
            :object-node
-           ;; :node
-           ;; :make-node
+           :msg-node
+           ;;
+           :node-p
            :node-name
            :node-init-args
            :node-id
@@ -32,9 +32,9 @@
 
 (in-package :pd-structs)
 
-;; idea: use types (object, message, floatatom, symbolatom) for different node templates
-;; (maybe objects that all implement a 'template'-message?)
-
+;; --------------------------------------------------------------------------------
+;; node classes
+;; 
 (defclass node ()
   ((id
     :accessor node-id
@@ -62,6 +62,11 @@
     :initform ""
     )))
 
+(defclass msg-node (object-node) ())
+
+;; --------------------------------------------------------------------------------
+;; templating
+;; 
 (defun to-string (any)
   (format nil "~a" any))
 
@@ -86,15 +91,12 @@
 (defmethod write-node ((n object-node))
   (fill-template '("#X obj" x y name init-args) n))
 
-;; (defstruct node
-;;   name                               ; string representation of object
-;;   init-args ; string representation of initial arguments (only object-nodes)
-;;   (id (gensym))              ; unique symbol (identifier in lisp)
-;;   index                      ; unique number (occurence in patch file)
-;;   rank
-;;   x y                                   ; position
-;;   )
+(defmethod write-node ((n msg-node))
+  (fill-template '("#X msg" x y init-args) n)) ; TODO: escape ; and $ in message text
 
+;; --------------------------------------------------------------------------------
+;; misc
+;; 
 (defstruct connection
   (out-id)                              ; gensym of source node
   (out-port)                            ; index of output port
