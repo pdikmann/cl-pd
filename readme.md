@@ -12,3 +12,7 @@ evaluate `usage.lisp`
 - add gui-nodes like sliders (hsl, vsl), bangs etc. pp. that have dozens of parameters
 - add option to position nodes by hand (:x :y keywords)
 - check for reasonable improvements to the auto-layouter (look at graphviz for inspiration)
+
+# Reference
+
+[PureData File Format documentation](http://puredata.info/docs/developer/PdFileFormat#6)
