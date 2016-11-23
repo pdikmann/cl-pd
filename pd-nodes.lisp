@@ -1,3 +1,6 @@
+;; nota bene:
+;; shadowing essential symbols from :common-lisp can lead to unexpected behavior; that is why anything but the basic object nodes are defined in :pd-nodes/2
+
 (defpackage :pd-nodes
   (:nicknames :pd)
   (:use :common-lisp)
@@ -8,6 +11,8 @@
   (:import-from :pd-writer
                 :connect
                 :add-node)
+  (:import-from :pd-nodes/2
+                :msg)
   (:shadow :float
            :symbol
            :t
@@ -291,12 +296,3 @@
                *object-nodes*)))
 
 (map-object-nodes)
-
-;; --------------------------------------------------------------------------------
-;; msg node
-;; 
-(defun msg (&rest args)
-  (let ((n (make-instance 'msg-node)))
-    (connect n args)
-    (add-node n)
-    n))

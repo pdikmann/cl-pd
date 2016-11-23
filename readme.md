@@ -8,9 +8,15 @@ evaluate `usage.lisp`
 
 # Roadmap
 
-- add the missing node types: messages, comments, floatatoms, symbolatoms, arrays, structs, subpatches, ...
+- add the missing node types (in order of importance): 
+  subpatches,
+  arrays & graphs, 
+  floatatoms, 
+  symbolatoms, 
+  structs, 
+  comments.
 - add gui-nodes like sliders (hsl, vsl), bangs etc. pp. that have dozens of parameters
-- add option to position nodes by hand (:x :y keywords)
+- add option to position nodes explicitly (:x :y keywords)
 - check for reasonable improvements to the auto-layouter (look at graphviz for inspiration)
 
 # Reference
