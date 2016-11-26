@@ -39,9 +39,16 @@
   ((id
     :accessor node-id
     :initform (gensym))
-   (index :accessor node-index)
-   (x :accessor node-x)
-   (y :accessor node-y)
+   (index
+    :accessor node-index)
+   (x
+    :initarg :x
+    :initform nil
+    :accessor node-x)
+   (y
+    :initarg :y
+    :initform nil
+    :accessor node-y)
    (rank
     :initform nil
     :accessor node-rank))

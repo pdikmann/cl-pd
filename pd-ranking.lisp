@@ -57,20 +57,36 @@
   (let ((n most-positive-fixnum))
     (maphash (lambda (k v)
                (declare (ignore k))
-               (when (< (node-rank v) n)
+               (when (and (not (null (node-rank v)))
+                          (< (node-rank v) n))
                  (setf n (node-rank v))))
              nodes-hash)
     n))
 
-(defun y-align (nodes-hash)
+(defun rank-safe (nodes-hash min-rank)
+  "set unranked (= unconnected) nodes to min-rank to enable comparability by #'< in #'y-align"
+  (maphash (lambda (k v)
+             (when (null (node-rank v))
+               (setf (node-rank (gethash k nodes-hash))
+                     min-rank)))
+           nodes-hash)
+  nodes-hash)
+
+(defun y-align (nodes-hash y-offset)
   "set node-y position based on node-rank"
+  (when (null y-offset)
+    (setf y-offset 0))
   (let ((min (min-rank nodes-hash)))
     (maphash (lambda (k v)
-               (setf (node-y (gethash k nodes-hash))
-                     (* +y-spacing+
-                        (+ (node-rank v)
-                           (* -1 min)))))
-             nodes-hash)
+               (when (null (node-y v)) ; ignore manually positioned nodes
+                 (setf (node-y (gethash k nodes-hash))
+                       (+ y-offset
+                          (* +y-spacing+
+                             (+ (node-rank v)
+                                (* -1 min)))))))
+             (rank-safe
+              nodes-hash
+              min))
     nodes-hash))
 
 (defun x-align (nodes-hash)
@@ -84,20 +100,21 @@
                    (setf (gethash (node-rank v) stacks)
                          0))
                ;; position right of stack
-               (setf (node-x (gethash k nodes-hash))
-                     (* +x-spacing+
-                        (gethash (node-rank v) stacks))))
+               (when (null (node-x v)) ; ignore manually positioned nodes
+                 (setf (node-x (gethash k nodes-hash))
+                       (* +x-spacing+
+                          (gethash (node-rank v) stacks)))))
              nodes-hash)
     nodes-hash))
 
-(defun rank (nodes connections)
+(defun rank (nodes connections y-offset)
   "rank, then position, given list of nodes"
   (let ((nodes-hash
          (x-align
           (y-align
-           (rank-hash
-            (make-nodes-hash nodes)
-            connections)))))
+           (rank-hash (make-nodes-hash nodes)
+                      connections)
+           y-offset))))
     ;; return nodes in original ordering
     (mapcar (lambda (original)
               (gethash (node-id original) nodes-hash))

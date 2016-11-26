@@ -49,17 +49,21 @@
                       (detuned (first lst)))
               (cascade (rest lst)))))
 
-(pdx:with-patch "~/pd/pd-writer/cascade.pd"
+(pdx:with-patch ("~/pd/pd-writer/cascade.pd")
   (let* ((freqs '(100 200 400 800 1600 3200 6400))
          (out (pd::*~ (/ 1.0 (length freqs)) (cascade (reverse freqs)))))
     (pd::dac~ out out)))
 
-(pdx:with-patch "~/pd/pd-writer/cascade2.pd"
+(pdx:with-patch ("~/pd/pd-writer/cascade2.pd")
   (let* ((freqs '(100 120 130 135 137))
          (out (pd::*~ (/ 1.0 (length freqs)) (cascade (reverse freqs)))))
     (pd::dac~ out out)))
 
-(pdx:with-patch "test.pd"
+(pdx:with-patch ("~/pd/pd-writer/test.pd" :graph-on-parent t
+                                          :view-width 300
+                                          :view-height 100
+                                          ;; :hide-object-name t
+                                          )
   (let* ((my-adder (pd::+ 1))
          (my-flt (pd::float 0
                             (pd::metro 500
@@ -68,4 +72,6 @@
     (pdx:connect my-adder (list my-flt))
     (pd::print "yeah"
                (pd::msg "message says hello \\$1" my-flt))
-    (pd::outlet my-flt)))
+    (pd::outlet my-flt)
+    (pd::+ :x 100 :y 0 123 456) ; manual positioning
+    ))

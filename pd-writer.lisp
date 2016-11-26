@@ -44,17 +44,29 @@
                  ";"
                  (string #\newline))))
 
-(defun write-patch ()
+(defun write-patch (&key
+                      graph-on-parent
+                      view-width
+                      view-height
+                      hide-object-name)
   (with-open-file (f *patch* :direction :output :if-exists :supersede)
     (format f "#N canvas 0 0 512 512 10;~%") ; patch init
     ;; ... nodes
     (mapcar (lambda (n)
               (princ (write-node n) f))
-            (reverse (rank *nodes* *connections*)))
+            (reverse (rank *nodes*
+                           *connections*
+                           view-height)))
     ;; ... connections
     (mapcar (lambda (c)
               (princ (write-connection c) f))
             *connections*)
+    ;; graph-on-parent
+    (when graph-on-parent
+      (format f "#X coords 0 -1 1 1 ~d ~d ~d 0 0;~%"
+              view-width
+              view-height
+              (if hide-object-name 2 1)))
     t))
 
 (defun add-connection (out-id out-port in-id in-port)
@@ -72,13 +84,13 @@
 ;; --------------------------------------------------------------------------------
 ;; user-facing
 ;; 
-(defmacro with-patch (patch-name &rest form)
+(defmacro with-patch (patch-config &rest form)
   `(progn
-    (setq *patch* ,patch-name)
+    (setq *patch* ,(first patch-config))
     (setq *nodes* nil)
     (setq *connections* nil)
     ,@form
-    (write-patch)))
+    (write-patch ,@(rest patch-config))))
 
 (defun port (number node)
   (make-port :number number
@@ -88,21 +100,28 @@
   (let ((port 0))
     (mapcar (lambda (arg)
               (cond
-                ((node-p arg)                    ; connect node
+                ;; connect node
+                ((node-p arg)      
                  (add-connection (node-id arg) 0 ; default output port
                                  (node-id n) port) ; argument position
                  (incf port))
+                ;; connect node (specific output port)
                 ((port-p arg)
                  (add-connection (node-id (port-node arg)) (port-number arg)
                                  (node-id n) port)
                  (incf port))
-                ((not (null arg))       ; add init-arg literal
+                ;; literals are added as init-args
+                ((not (null arg))     
                  (setf (node-init-args n)
                        (concatenate 'string
                                     (node-init-args n) " "
                                     (to-string arg))))
+                ;; an argument of `nil` explicitly increments the input port counter
                 ((null arg)
-                 (incf port)            ; an argument of `nil` explicitly increments the port counter
+                 (incf port) 
                  )))
             args))
   n)
+
+(defun foo (&rest form &key (a 0) (b 0))
+  (list a b form))

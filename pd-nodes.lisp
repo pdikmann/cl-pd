@@ -1,6 +1,8 @@
 (defpackage :pd-nodes
   (:nicknames :pd)
-  (:use :common-lisp)
+  (:use :common-lisp
+        :pd-nodes/3
+        :pd-nodes/4)
   (:import-from :pd-structs
                 :node
                 :object-node
@@ -8,6 +10,8 @@
   (:import-from :pd-writer
                 :connect
                 :add-node)
+  (:import-from :pd-nodes/3
+                :bng)
   (:shadow :float
            :symbol
            :t
@@ -276,14 +280,6 @@
     rev3~
     bob~
     ))
-
-(defmacro object-node-template (name)
-  `(defun ,name (&rest args)
-     (let ((n (make-instance 'object-node
-                             :name (format nil "~(~a~)" ',name))))
-       (connect n args)
-       (add-node n)
-       n)))
 
 (defmacro map-object-nodes ()
   `(progn
