@@ -1,20 +1,12 @@
 (defpackage :pd-ranking
   (:use :common-lisp
         :pd-structs)
-  ;; (:import-from :pd-structs
-  ;;               :node-name
-  ;;               :node-init-args
-  ;;               :node-id
-  ;;               :node-index
-  ;;               :node-rank
-  ;;               :node-x
-  ;;               :node-y)
   (:export rank))
 
 (in-package :pd-ranking)
 
-(defparameter +x-spacing+ 100)
-(defparameter +y-spacing+ 50)
+(defparameter *x-spacing* 100)
+(defparameter *y-spacing* 50)
 
 (defun make-nodes-hash (nodes)
   "turn list of nodes into hashtable for easier processing"
@@ -81,7 +73,7 @@
                (when (null (node-y v)) ; ignore manually positioned nodes
                  (setf (node-y (gethash k nodes-hash))
                        (+ y-offset
-                          (* +y-spacing+
+                          (* *y-spacing*
                              (+ (node-rank v)
                                 (* -1 min)))))))
              (rank-safe
@@ -102,7 +94,7 @@
                ;; position right of stack
                (when (null (node-x v)) ; ignore manually positioned nodes
                  (setf (node-x (gethash k nodes-hash))
-                       (* +x-spacing+
+                       (* *x-spacing*
                           (gethash (node-rank v) stacks)))))
              nodes-hash)
     nodes-hash))

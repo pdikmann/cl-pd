@@ -1,17 +1,11 @@
 (defpackage :pd-nodes
   (:nicknames :pd)
   (:use :common-lisp
-        :pd-nodes/3
+        :pd-structs
         :pd-nodes/4)
-  (:import-from :pd-structs
-                :node
-                :object-node
-                :msg-node)
   (:import-from :pd-writer
                 :connect
                 :add-node)
-  (:import-from :pd-nodes/3
-                :bng)
   (:shadow :float
            :symbol
            :t
@@ -283,7 +277,7 @@
 
 (defmacro map-object-nodes ()
   `(progn
-     ,@(mapcar (lambda (name) `(object-node-template ,name))
+     ,@(mapcar (lambda (name) `(node-template 'object-node ,name))
                *object-nodes*)))
 
 (map-object-nodes)
@@ -296,3 +290,5 @@
     (connect n args)
     (add-node n)
     n))
+
+(node-template 'bng-node bng)

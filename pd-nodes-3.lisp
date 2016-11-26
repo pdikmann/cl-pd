@@ -5,4 +5,9 @@
 
 (in-package :pd-nodes/3)
 
-(defun bng () t)
+(defun bng (&rest args) t
+  ;; (let ((n (apply #'make-instance
+  ;;                 'bng-node
+  ;;                 args)))
+  ;;   (connect n ))
+  )

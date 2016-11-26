@@ -1,18 +1,18 @@
 (defpackage :pd-nodes/4
-  (:use :common-lisp)
-  (:import-from :pd-structs
-                :node
-                :object-node)
+  (:use :common-lisp
+        :pd-structs)
   (:import-from :pd-writer
                 :connect
                 :add-node)
-  (:export :object-node-template))
+  (:export :node-template))
 
 (in-package :pd-nodes/4)
 
-(defmacro object-node-template (name)
+(defmacro node-template (type name)
+  "defines a function #'NAME that will create a node of type TYPE when called"
   `(defun ,name (&rest args)
-     (multiple-value-bind (keys args) ;; check for keyword-arguments AT BEGINNING of argument list
+     (multiple-value-bind (keys args)
+         ;; check for keyword-arguments AT BEGINNING of argument list
          (labels ((get-keys (args &optional (keys nil))
                     (cond
                       ((keywordp (first args))
@@ -21,8 +21,9 @@
                       (t
                        (values keys args)))))
            (get-keys args))
+       ;; create node and connect it
        (let ((n (apply #'make-instance
-                       'object-node
+                       ,type
                        :name (format nil "~(~a~)" ',name)
                        keys)))
          (connect n args)
