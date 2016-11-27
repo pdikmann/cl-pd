@@ -69,10 +69,11 @@
                             (pd::metro 500
                                        (pd::loadbang))
                             my-adder)))
-    (pdx:connect my-adder (list my-flt))
+    (pdx:connect my-adder my-flt)
     (pd::print "yeah"
                (pd::msg "message says hello \\$1" my-flt))
     (pd::outlet my-flt)
+    (pd::cnv :x 0 :y 0 :width 500) ; canvas
     (pd::+ :x 100 :y 0 123 456) ; manual positioning
     (pd::print "junk food"
                (pd::bng :x 50 :y 50 :size 32

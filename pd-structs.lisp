@@ -8,6 +8,7 @@
            :msg-node
            :ui-node
            :bng-node
+           :cnv-node
            ;;
            :node-p
            :node-name
@@ -90,6 +91,14 @@
    (interrupt :initarg :interrupt :initform 50)
    (init      :initarg :init      :initform 0)))
 
+(defclass cnv-node (ui-node)
+  ((bg-color    :initarg :bg-color    :initform -233017) ; different default color
+   (label-color :initarg :label-color :initform -66577) ; different default color
+   (size        :initarg :size        :initform 15)
+   (width       :initarg :width       :initform 100)
+   (height      :initarg :height      :initform 60)
+   (unknown :initform 0)))
+
 ;; --------------------------------------------------------------------------------
 ;; templating
 ;; 
@@ -130,6 +139,18 @@
                    label-x label-y
                    font-family font-size
                    bg-color fg-color label-color)
+                 n))
+
+(defmethod write-node ((n cnv-node))
+  (fill-template '("#X obj" x y name ;"cnv"
+                   size
+                   width height
+                   send-symbol receive-symbol
+                   label-text
+                   label-x label-y
+                   font-family font-size
+                   bg-color label-color
+                   unknown)
                  n))
 
 ;; --------------------------------------------------------------------------------

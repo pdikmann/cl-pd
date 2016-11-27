@@ -26,6 +26,6 @@
                        ,type
                        :name (format nil "~(~a~)" ',name)
                        keys)))
-         (connect n args)
+         (apply #'connect n args)
          (add-node n)
          n))))

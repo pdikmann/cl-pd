@@ -87,7 +87,7 @@
   (make-port :number number
              :node node))
 
-(defun connect (n args)
+(defun connect (n &rest args)
   (let ((port 0))
     (mapcar (lambda (arg)
               (cond

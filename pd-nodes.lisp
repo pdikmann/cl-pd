@@ -287,8 +287,9 @@
 ;; 
 (defun msg (&rest args)
   (let ((n (make-instance 'msg-node)))
-    (connect n args)
+    (apply #'connect n args)
     (add-node n)
     n))
 
 (node-template 'bng-node bng)
+(node-template 'cnv-node cnv)
