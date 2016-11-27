@@ -8,6 +8,7 @@
            :msg-node
            :ui-node
            :bng-node
+           :tgl-node
            :cnv-node
            ;;
            :node-p
@@ -91,6 +92,12 @@
    (interrupt :initarg :interrupt :initform 50)
    (init      :initarg :init      :initform 0)))
 
+(defclass tgl-node (ui-node)
+  ((size          :initarg :size          :initform 15)
+   (init          :initarg :init          :initform 0)
+   (init-value    :initarg :init-value    :initform 0)
+   (nonzero-value :initarg :nonzero-value :initform 1)))
+
 (defclass cnv-node (ui-node)
   ((bg-color    :initarg :bg-color    :initform -233017) ; different default color
    (label-color :initarg :label-color :initform -66577) ; different default color
@@ -139,6 +146,18 @@
                    label-x label-y
                    font-family font-size
                    bg-color fg-color label-color)
+                 n))
+
+(defmethod write-node ((n tgl-node))
+  (fill-template '("#X obj" x y name ;"tgl"
+                   size
+                   init
+                   send-symbol receive-symbol
+                   label-text
+                   label-x label-y
+                   font-family font-size
+                   bg-color fg-color label-color
+                   init-value nonzero-value)
                  n))
 
 (defmethod write-node ((n cnv-node))

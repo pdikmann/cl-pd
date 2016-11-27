@@ -85,14 +85,14 @@
   "set node-x position based on number of nodes on same node-y position"
   (let ((stacks (make-hash-table)))
     (maphash (lambda (k v)
-               ;; update stack size for current rank
-               (if (gethash (node-rank v) stacks)
-                   (setf (gethash (node-rank v) stacks)
-                         (1+ (gethash (node-rank v)  stacks)))
-                   (setf (gethash (node-rank v) stacks)
-                         0))
-               ;; position right of stack
                (when (null (node-x v)) ; ignore manually positioned nodes
+                 ;; update stack size for current rank
+                 (if (gethash (node-rank v) stacks)
+                     (setf (gethash (node-rank v) stacks)
+                           (1+ (gethash (node-rank v)  stacks)))
+                     (setf (gethash (node-rank v) stacks)
+                           0))
+                 ;; position right of stack
                  (setf (node-x (gethash k nodes-hash))
                        (* *x-spacing*
                           (gethash (node-rank v) stacks)))))
