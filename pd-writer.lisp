@@ -5,7 +5,9 @@
         :pd-ranking)
   (:export :with-patch
            :port
-           :connect))
+           :connect
+           :color/live
+           :color/file))
 
 (in-package :pd-writer)
 
@@ -36,12 +38,14 @@
                  (string #\newline))))
 
 (defun write-patch (&key
+                      (width 512)
+                      (height 512)
                       graph-on-parent
                       view-width
                       view-height
                       hide-object-name)
   (with-open-file (f *patch* :direction :output :if-exists :supersede)
-    (format f "#N canvas 0 0 512 512 10;~%") ; patch init
+    (format f "#N canvas 0 0 ~d ~d 10;~%" width height) ; patch init
     ;; ... nodes
     (mapcar (lambda (n)
               (princ (write-node n) f))
@@ -114,5 +118,17 @@
             args))
   n)
 
-(defun foo (&rest form &key (a 0) (b 0))
-  (list a b form))
+(defun color/live (r g b)
+  "used to assign colors at runtime, e.g. when adressing ui-nodes by pd messages"
+  (1- (+ (* r -65536)
+         (* g -256)
+         (* b -1))))
+
+(defun color/file (r g b)
+  "used to assign colors at compile-time, e.g. when writing them into a patch file"
+  (destructuring-bind (r2 g2 b2)
+      (mapcar (lambda (x) (floor (/ x 4)))
+              (list r g b))
+    (1- (+ (* r2 -4096)
+           (* g2 -64)
+           (* b2 -1)))))

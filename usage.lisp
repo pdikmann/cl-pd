@@ -59,6 +59,29 @@
          (out (pd::*~ (/ 1.0 (length freqs)) (cascade (reverse freqs)))))
     (pd::dac~ out out)))
 
+(pdx::with-patch ("~/pd/pd-writer/color-range.pd" :width 1040 :height 128)
+  (mapcar (lambda (r x)
+            (pd::bng :x (* x 16) :y 0
+                     :bg-color (pdx::color/file r 0 0))
+            (pd::bng :x (* x 16) :y 16
+                     :bg-color (pdx::color/file 0 r 0))
+            (pd::bng :x (* x 16) :y 32
+                     :bg-color (pdx::color/file 0 0 r))
+            (pd::bng :x (* x 16) :y 48
+                     :bg-color (pdx::color/file r r 0))
+            (pd::bng :x (* x 16) :y 64
+                     :bg-color (pdx::color/file r 0 r))
+            (pd::bng :x (* x 16) :y 80
+                     :bg-color (pdx::color/file 0 r r))
+            (pd::bng :x (* x 16) :y 96
+                     :bg-color (pdx::color/file r r r)))
+          (loop
+             for r from 0 to 255 by 4
+             collect r)
+          (loop
+             for x from 0 to 63
+             collect x)))
+
 (pdx:with-patch ("~/pd/pd-writer/test.pd" :graph-on-parent t
                                           :view-width 300
                                           :view-height 100

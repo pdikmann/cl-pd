@@ -2,6 +2,8 @@
 
 Common Lisp helpers for generating PureData patches. WIP - please excuse the mess!
 
+Targeted at Pd 0.46.7
+
 # Usage
 
 evaluate `usage.lisp`
