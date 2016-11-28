@@ -9,8 +9,6 @@
   (:import-from :pd-writer
                 :connect
                 :add-node)
-  (:import-from :pd-nodes/2
-                :msg)
   (:shadow :float
            :symbol
            :t
@@ -287,15 +285,7 @@
 
 (map-object-nodes)
 
-;; --------------------------------------------------------------------------------
-;; msg node
-;; 
-;; (defun msg (&rest args)
-;;   (let ((n (make-instance 'msg-node)))
-;;     (apply #'connect n args)
-;;     (add-node n)
-;;     n))
-
+(node-template 'msg-node msg)
 (node-template 'bng-node bng)
 (node-template 'tgl-node tgl)
 (node-template 'cnv-node cnv)
