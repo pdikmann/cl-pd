@@ -49,17 +49,18 @@
                       (detuned (first lst)))
               (cascade (rest lst)))))
 
-(pdx:with-patch ("~/pd/pd-writer/cascade.pd")
+(pdx:with-patch ("cascade.pd")
   (let* ((freqs '(100 200 400 800 1600 3200 6400))
          (out (pd::*~ (/ 1.0 (length freqs)) (cascade (reverse freqs)))))
     (pd::dac~ out out)))
 
-(pdx:with-patch ("~/pd/pd-writer/cascade2.pd")
+(pdx:with-patch ("cascade2.pd")
   (let* ((freqs '(100 120 130 135 137))
          (out (pd::*~ (/ 1.0 (length freqs)) (cascade (reverse freqs)))))
     (pd::dac~ out out)))
 
-(pdx::with-patch ("~/pd/pd-writer/color-range.pd" :width 1040 :height 128)
+
+(pdx::with-patch ("color-range.pd" :width 1040 :height 128)
   (mapcar (lambda (r x)
             (pd::bng :x (* x 16) :y 0
                      :bg-color (pdx::color/file r 0 0))
@@ -82,7 +83,7 @@
              for x from 0 to 63
              collect x)))
 
-(pdx:with-patch ("~/pd/pd-writer/test.pd" :graph-on-parent t
+(pdx:with-patch ("test.pd" :graph-on-parent t
                                           :view-width 300
                                           :view-height 100
                                           ;; :hide-object-name t
@@ -93,11 +94,12 @@
                                        (pd::loadbang))
                             my-adder)))
     (pdx:connect my-adder my-flt)
+    (pd::symbol "$1 $2 $3")
     (pd::print "yeah"
-               (pd::msg "message says hello \\$1" my-flt))
+               (pd::msg "message says hello $1" my-flt))
     (pd::outlet my-flt)
-    (pd::cnv :x 0 :y 0 :width 500) ; canvas
-    (pd::+ :x 100 :y 0 123 456) ; manual positioning
+    (pd::cnv :x 0 :y 0 :width 500)      ; canvas
+    (pd::+ :x 100 :y 0 123 456)         ; manual positioning
     (pd::print "junk food"
                (pd::bng :x 50 :y 50 :size 32
                         :interrupt 5 :hold 250))

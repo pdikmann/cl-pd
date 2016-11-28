@@ -2,7 +2,7 @@
 
 Common Lisp helpers for generating PureData patches. WIP - please excuse the mess!
 
-Targeted at Pd 0.46.7
+Targeted at Pd 0.47.1
 
 # Usage
 
@@ -15,7 +15,13 @@ evaluate `usage.lisp`
   and add an y-offset to the auto-layouted node positions.
 - [DONE] add :x and :y keywords to object nodes for manual placement
 - [IN PROGRESS] add gui-nodes like sliders (hsl, vsl), bangs etc. pp. that have dozens of parameters
-- add the missing node types: messages, comments, floatatoms, symbolatoms, arrays, structs, subpatches, ...
+- add the missing node types (in order of importance): 
+  subpatches,
+  arrays & graphs, 
+  floatatoms, 
+  symbolatoms, 
+  structs, 
+  comments.
 - check for reasonable improvements to the auto-layouter (look at graphviz for inspiration)
 
 # Reference
