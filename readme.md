@@ -22,6 +22,7 @@ evaluate `usage.lisp`
   symbolatoms, 
   structs, 
   comments.
+- look into asdf (or similar) and quicklisp
 - check for reasonable improvements to the auto-layouter (look at graphviz for inspiration)
 
 # Reference
