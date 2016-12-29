@@ -6,6 +6,8 @@
 
 (in-package :pd-usage)
 
+(load "pd-init.lisp") ;; FIXME use asdf or similar
+
 ;; --------------------------------------------------------------------------------
 ;; usage
 ;;
@@ -30,8 +32,6 @@
 ;; - more complex objects use keyword parameters, e.g.
 ;;
 ;;  (hsl :width 100 :height 15 ...)
-
-(load "pd-init.lisp")
 
 (defun detuned (freq)
   (pd::osc~
@@ -62,32 +62,32 @@
 
 (pdx::with-patch ("color-range.pd" :width 1040 :height 128)
   (mapcar (lambda (r x)
-            (pd::bng :x (* x 16) :y 0
+            (pd::bng :x x :y 0
                      :bg-color (pdx::color/file r 0 0))
-            (pd::bng :x (* x 16) :y 16
+            (pd::bng :x x :y 16
                      :bg-color (pdx::color/file 0 r 0))
-            (pd::bng :x (* x 16) :y 32
+            (pd::bng :x x :y 32
                      :bg-color (pdx::color/file 0 0 r))
-            (pd::bng :x (* x 16) :y 48
+            (pd::bng :x x :y 48
                      :bg-color (pdx::color/file r r 0))
-            (pd::bng :x (* x 16) :y 64
+            (pd::bng :x x :y 64
                      :bg-color (pdx::color/file r 0 r))
-            (pd::bng :x (* x 16) :y 80
+            (pd::bng :x x :y 80
                      :bg-color (pdx::color/file 0 r r))
-            (pd::bng :x (* x 16) :y 96
+            (pd::bng :x x :y 96
                      :bg-color (pdx::color/file r r r)))
           (loop
              for r from 0 to 255 by 4
              collect r)
           (loop
              for x from 0 to 63
-             collect x)))
+             collect (* x 16))))
 
 (pdx:with-patch ("test.pd" :graph-on-parent t
-                                          :view-width 300
-                                          :view-height 100
-                                          ;; :hide-object-name t
-                                          )
+                           :view-width 300
+                           :view-height 100
+                           ;; :hide-object-name t
+                           )
   (let* ((my-adder (pd::+ 1))
          (my-flt (pd::float 0
                             (pd::metro 500

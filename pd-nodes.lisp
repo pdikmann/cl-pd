@@ -278,11 +278,11 @@
     bob~
     ))
 
+;; TODO is this really the most elegant way?
 (defmacro map-object-nodes ()
   `(progn
      ,@(mapcar (lambda (name) `(node-template 'object-node ,name))
-               *object-nodes*)))
-
+               *object-nodes*))) 
 (map-object-nodes)
 
 (node-template 'msg-node msg)
