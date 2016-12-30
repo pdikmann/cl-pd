@@ -6,6 +6,7 @@
            :node
            :object-node
            :msg-node
+           :patch-node
            :ui-node
            :bng-node
            :tgl-node
@@ -84,6 +85,7 @@
     )))
 
 (defclass msg-node (object-node) ())
+(defclass patch-node (object-node) ())
 
 (defclass ui-node (node)
   ((send-symbol    :accessor node-send-symbol    :initarg :send        :initform "empty")
@@ -145,7 +147,10 @@
   (fill-template '("#X obj" x y name init-args) n))
 
 (defmethod write-node ((n msg-node))
-  (fill-template '("#X msg" x y init-args) n)) ; TODO: escape ; and $ in message text
+  (fill-template '("#X msg" x y init-args) n))
+
+(defmethod write-node ((n patch-node))
+  (fill-template '("#X obj" x y init-args) n))
 
 (defmethod write-node ((n bng-node))
   (fill-template '("#X obj" x y name ;"bng"

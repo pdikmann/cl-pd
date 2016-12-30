@@ -286,6 +286,7 @@
 (map-object-nodes)
 
 (node-template 'msg-node msg)
+(node-template 'patch-node patch)
 (node-template 'bng-node bng)
 (node-template 'tgl-node tgl)
 (node-template 'cnv-node cnv)
