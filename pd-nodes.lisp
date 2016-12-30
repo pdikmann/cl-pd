@@ -285,7 +285,8 @@
                *object-nodes*))) 
 (map-object-nodes)
 
-(node-template 'msg-node msg)
+(node-template 'self-node msg)
+(node-template 'self-node text)
 (node-template 'patch-node patch)
 (node-template 'bng-node bng)
 (node-template 'tgl-node tgl)

@@ -5,7 +5,7 @@
            ;; --------------------------------
            :node
            :object-node
-           :msg-node
+           :self-node
            :patch-node
            :ui-node
            :bng-node
@@ -84,7 +84,11 @@
     :initform ""
     )))
 
-(defclass msg-node (object-node) ())
+(defclass self-node (object-node)
+  ;; for nodes like "msg" and "text" that are represented as "#X msg" or "#X text"
+  ;; (e.g. representing themselves)
+  ())
+
 (defclass patch-node (object-node) ())
 
 (defclass ui-node (node)
@@ -146,8 +150,8 @@
 (defmethod write-node ((n object-node))
   (fill-template '("#X obj" x y name init-args) n))
 
-(defmethod write-node ((n msg-node))
-  (fill-template '("#X msg" x y init-args) n))
+(defmethod write-node ((n self-node))
+  (fill-template '("#X" name x y init-args) n))
 
 (defmethod write-node ((n patch-node))
   (fill-template '("#X obj" x y init-args) n))
