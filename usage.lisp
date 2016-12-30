@@ -111,7 +111,10 @@
          (my-flt (pd::float 0
                             (pd::metro 500
                                        (pd::loadbang))
-                            my-adder)))
+                            my-adder))
+         (list-of-messages (loop for i from 0 to 10 collect
+                                (pd::msg i))))
+    (pd::print list-of-messages)
     (pdx:connect my-adder my-flt)
     (pd::symbol "$1 $2 $3")
     (pd::print "yeah"

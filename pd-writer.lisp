@@ -92,31 +92,43 @@
              :node node))
 
 (defun connect (n &rest args)
-  (let ((port 0))
-    (mapcar (lambda (arg)
-              (cond
-                ;; connect node
-                ((node-p arg)      
-                 (add-connection (node-id arg) 0 ; default output port
-                                 (node-id n) port) ; argument position
-                 (incf port))
-                ;; connect node (specific output port)
-                ((port-p arg)
-                 (add-connection (node-id (port-node arg)) (port-number arg)
-                                 (node-id n) port)
-                 (incf port))
-                ;; literals are added as init-args
-                ((not (null arg))     
-                 (setf (node-init-args n)
-                       (concatenate 'string
-                                    (node-init-args n) " "
-                                    (to-string arg))))
-                ;; an argument of `nil` explicitly increments the input port counter
-                ((null arg)
-                 (incf port) 
-                 )))
-            args))
-  n)
+  (labels
+      ((recur (n port args &optional (inc-port t))
+         (if
+          (not (null args))
+          (let ((arg (first args))
+                (remaining (rest args)))
+            (cond
+              ;; connect node
+              ((node-p arg)      
+               (add-connection (node-id arg) 0   ; default output port
+                               (node-id n) port) ; argument position
+               (recur n (if inc-port (1+ port) port)
+                      remaining inc-port))
+              ;; connect node (specific output port)
+              ((port-p arg)
+               (add-connection (node-id (port-node arg)) (port-number arg)
+                               (node-id n) port)
+               (recur n (if inc-port (1+ port) port)
+                      remaining inc-port))
+              ;; all elements of a list are connected to the same inlet
+              ((listp arg)
+               (recur n port arg nil)
+               (recur n (if inc-port (1+ port) port)
+                      remaining inc-port))
+              ;; literals are added as init-args
+              ((not (null arg))     
+               (setf (node-init-args n)
+                     (concatenate 'string
+                                  (node-init-args n) " "
+                                  (to-string arg)))
+               (recur n port remaining inc-port))
+              ;; an argument of `nil` explicitly increments the input port counter
+              ((null arg)
+               (recur n (if inc-port (1+ port) port)
+                      remaining inc-port))))
+          n)))
+    (recur n 0 args t)))
 
 (defun color/live (r g b)
   "used to assign colors at runtime, e.g. when adressing ui-nodes by pd messages"
