@@ -87,7 +87,7 @@
     ,@form
     (write-patch ,@(rest patch-config))))
 
-(defun port (number node)
+(defun port (number node) ; TODO rename to "outlet", flip argument order
   (make-port :number number
              :node node))
 
