@@ -13,14 +13,14 @@
 
 ;; --------------------------------------------------------------------------------
 ;; data
-;; 
+;;
 (defparameter *patch* "")
 (defparameter *nodes* nil)
 (defparameter *connections* nil)
 
 ;; --------------------------------------------------------------------------------
 ;; pd
-;; 
+;;
 
 (defun write-connection (c)
   (let ((out (find (connection-out-id c) *nodes* :key #'node-id))
@@ -78,7 +78,7 @@
 
 ;; --------------------------------------------------------------------------------
 ;; user-facing
-;; 
+;;
 (defmacro with-patch (patch-config &rest form)
   `(progn
     (setq *patch* ,(first patch-config))
@@ -93,41 +93,40 @@
 
 (defun connect (n &rest args)
   (labels
-      ((recur (n port args &optional (inc-port t))
-         (if
-          (not (null args))
-          (let ((arg (first args))
-                (remaining (rest args)))
-            (cond
-              ;; connect node
-              ((node-p arg)      
-               (add-connection (node-id arg) 0   ; default output port
-                               (node-id n) port) ; argument position
-               (recur n (if inc-port (1+ port) port)
-                      remaining inc-port))
-              ;; connect node (specific output port)
-              ((port-p arg)
-               (add-connection (node-id (port-node arg)) (port-number arg)
-                               (node-id n) port)
-               (recur n (if inc-port (1+ port) port)
-                      remaining inc-port))
-              ;; all elements of a list are connected to the same inlet
-              ((listp arg)
-               (recur n port arg nil)
-               (recur n (if inc-port (1+ port) port)
-                      remaining inc-port))
-              ;; literals are added as init-args
-              ((not (null arg))     
-               (setf (node-init-args n)
-                     (concatenate 'string
-                                  (node-init-args n) " "
-                                  (to-string arg)))
-               (recur n port remaining inc-port))
-              ;; an argument of `nil` explicitly increments the input port counter
-              ((null arg)
-               (recur n (if inc-port (1+ port) port)
-                      remaining inc-port))))
-          n)))
+      ((recur (n port args
+               &optional (inc-port-p t))
+         (if (not (null args))
+             (let ((arg (first args))
+                   (next-args (rest args))
+                   (next-port (if inc-port-p
+                                  (1+ port)
+                                  port)))
+               (cond
+                 ;; connect node
+                 ((node-p arg)
+                  (add-connection (node-id arg) 0 ; default outlet
+                                  (node-id n) port) ; argument position
+                  (recur n next-port next-args inc-port-p))
+                 ;; connect specific outlet of a node
+                 ((port-p arg)
+                  (add-connection (node-id (port-node arg)) (port-number arg)
+                                  (node-id n) port)
+                  (recur n next-port next-args inc-port-p))
+                 ;; all elements of a list are connected to the same inlet
+                 ((listp arg)
+                  (recur n port arg nil)
+                  (recur n next-port next-args inc-port-p))
+                 ;; literals are added as init-args
+                 ((not (null arg))
+                  (setf (node-init-args n)
+                        (concatenate 'string
+                                     (node-init-args n) " "
+                                     (to-string arg)))
+                  (recur n port next-args inc-port-p))
+                 ;; an argument of `nil` explicitly increments the input port counter
+                 ((null arg)
+                  (recur n next-port next-args inc-port-p))))
+             n)))
     (recur n 0 args t)))
 
 (defun color/live (r g b)
