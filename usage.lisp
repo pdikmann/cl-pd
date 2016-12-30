@@ -83,6 +83,25 @@
              for x from 0 to 63
              collect (* x 16))))
 
+(pdx:with-patch ("list-unwind.pd")
+  ;; take list on inlet,
+  ;; split list into single items,
+  ;; output each item on leftmost outlet,
+  ;; bang rightmost outlet when done.
+  ;; 
+  ;; use: feeding variable-length lists as arguments to message boxes with fixed numbers of arguments.
+  (let* ((t-in (pd::t "b a" (pd::inlet))) ; inlet
+         (split (pd::list "split 1"))
+         (t-done (pd::t "b b" (pdx::port 2 split)))
+         (buf (pd::list
+               (pd::until t-in
+                          t-done)
+               (pdx::port 1 t-in)))
+         (items (pd::outlet :x 0 split)) ; left outlet
+         (complete (pd::outlet :x 100 (pdx::port 1 t-done)))) ; right outlet
+    (pdx::connect buf nil (pdx::port 1 split))
+    (pdx::connect split buf)))
+
 (pdx:with-patch ("test.pd" :graph-on-parent t
                            :view-width 300
                            :view-height 100
