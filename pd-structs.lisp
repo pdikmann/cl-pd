@@ -10,7 +10,7 @@
            :bng-node
            :tgl-node
            :cnv-node
-           ;;
+           ;; from node
            :node-p
            :node-name
            :node-init-args
@@ -19,6 +19,17 @@
            :node-rank
            :node-x
            :node-y
+           ;; from ui-node
+           :node-send-symbol   
+           :node-receive-symbol
+           :node-label-text    
+           :node-label-x       
+           :node-label-y       
+           :node-font-family   
+           :node-font-size     
+           :node-bg-color      
+           :node-fg-color      
+           :node-label-color   
            ;; --------------------------------
            :connection
            :make-connection
@@ -75,16 +86,16 @@
 (defclass msg-node (object-node) ())
 
 (defclass ui-node (node)
-  ((send-symbol    :initarg :send        :initform "empty")
-   (receive-symbol :initarg :receive     :initform "empty")
-   (label-text     :initarg :label       :initform "empty")
-   (label-x        :initarg :label-x     :initform 17)
-   (label-y        :initarg :label-y     :initform 7)
-   (font-family    :initarg :font        :initform 0)
-   (font-size      :initarg :font-size   :initform 10)
-   (bg-color       :initarg :bg-color    :initform -262144)
-   (fg-color       :initarg :fg-color    :initform -1)
-   (label-color    :initarg :label-color :initform -1)))
+  ((send-symbol    :accessor node-send-symbol    :initarg :send        :initform "empty")
+   (receive-symbol :accessor node-receive-symbol :initarg :receive     :initform "empty")
+   (label-text     :accessor node-label-text     :initarg :label       :initform "empty")
+   (label-x        :accessor node-label-x        :initarg :label-x     :initform 17)
+   (label-y        :accessor node-label-y        :initarg :label-y     :initform 7)
+   (font-family    :accessor node-font-family    :initarg :font        :initform 0)
+   (font-size      :accessor node-font-size      :initarg :font-size   :initform 10)
+   (bg-color       :accessor node-bg-color       :initarg :bg-color    :initform -262144)
+   (fg-color       :accessor node-fg-color       :initarg :fg-color    :initform -1)
+   (label-color    :accessor node-label-color    :initarg :label-color :initform -1)))
 
 (defclass bng-node (ui-node)
   ((size      :initarg :size      :initform 15)
