@@ -6,7 +6,7 @@ Targeted at Pd 0.47.1
 
 # Usage
 
-evaluate `usage.lisp`
+read and evaluate `usage.lisp`
 
 # Roadmap
 
@@ -15,13 +15,14 @@ evaluate `usage.lisp`
   and add an y-offset to the auto-layouted node positions.
 - [DONE] add :x and :y keywords to object nodes for manual placement
 - [IN PROGRESS] add gui-nodes like sliders (hsl, vsl), bangs etc. pp. that have dozens of parameters
+- write a good tutorial/documentation (with pictures).
 - add the missing node types (in order of importance): 
   subpatches,
   arrays & graphs, 
   floatatoms, 
   symbolatoms, 
   structs, 
-  comments.
+  [DONE] comments.
 - look into asdf (or similar) and quicklisp
 - check for reasonable improvements to the auto-layouter (look at graphviz for inspiration)
 
