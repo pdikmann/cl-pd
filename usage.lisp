@@ -13,20 +13,20 @@
 ;;
 
 ;; rules:
-;; 
+;;
 ;; - literals (strings, numbers, symbols) are concatenated verbatim to the object literal.
 ;;   (this is how pd initializes objects with arguments)
-;; 
+;;
 ;; - anything else (nil, nodes, ports) is connected to the input ports of the object.
-;; 
+;;
 ;; - to connect to a specific input port, you have to put the connectee
 ;;   into the corresponding argument position,
 ;;   e.g. to connect to the second port while skipping the first:
-;;   
+;;
 ;;   (+~ nil (osc~ 100))
-;;   
+;;
 ;;   and with initialization arguments:
-;;   
+;;
 ;;   (+~ 10 20 nil (number 20))
 ;;
 ;; - more complex objects use keyword parameters, e.g.
@@ -49,8 +49,8 @@
 ;; steps:
 
 ;; 1) basic usage
-(pdx:with-patch ; with-patch writes a file.
-    ("basic-usage.pd") ; these are options, e.g. file name.
+(pdx:with-patch             ; with-patch writes a file.
+    ("basic-usage.pd")      ; these are options, e.g. file name.
   (pd::text "hello world")) ; all nodes are accessible in the pd package. use pd::node because some overwrite/shadow cl-user (e.g. list).
 
 ;; 2) auto layouter
@@ -59,13 +59,12 @@
   (pd::print "result"
              (pd::+ (pd::msg 1)
                     (pd::msg 2)))) ; connections are laid out by a primitive auto-layouter (so you can still figure out what's going on).
-;; 3) 
 
-;; x) node arguments
+;; 3) node arguments
 (pdx:with-patch
     ("node-arguments.pd")
   (pd::route 1 2)                             ; numbers and strings are used as literal arguments, just like creating a node in pd.
-  (pd::msg "hello my name is $0")             ; pd-specific characters like $ and ; work as expected.
+  (pd::msg "hello my name is $0")             ; special characters like $ and ; work as expected when used in strings.
   (pd::+ (pd::msg 1) (pd::msg 2))             ; other nodes are connected to the inlets in the order of the arguments, e.g. the leftmost argument is connected to the leftmost inlet.
   (pd::- nil (pd::msg 3))                     ; to skip an inlet, put nil as the argument.
   (pd::print "hello" (list (pd::msg "bob")
@@ -93,7 +92,7 @@
                                               ; except there's no keyword arguments allowed.
   )
 
-;; x) patch options
+;; 4) patch options
 (pdx:with-patch
     ("patch-options.pd"
      :width 320 :height 240           ; these are the window sizes.
@@ -105,7 +104,7 @@
      )
   (pd::text "this is above me."))
 
-;; x) extras
+;; 5) extras
 (pdx:with-patch
     ("extras.pd")
   (pd::bng :bg-color (pdx:color/file 255 0 255) ; initial colors (set at compile-time) are specified using pdx:color/file.
@@ -116,7 +115,7 @@
            (pdx:color/live 0 0 0)
            -1))
 
-;; x) tips and trick
+;; 6) tips and trick
 (defun osc-tree (count)
   (if (= count 0)
       (pd::osc~ (random 1000))
@@ -183,7 +182,7 @@
   ;; split list into single items,
   ;; output each item on leftmost outlet,
   ;; bang rightmost outlet when done.
-  ;; 
+  ;;
   ;; use: feeding variable-length lists as arguments to message boxes with fixed numbers of arguments.
   (let* ((t-in (pd::t "b a" (pd::inlet))) ; inlet
          (split (pd::list "split 1"))
