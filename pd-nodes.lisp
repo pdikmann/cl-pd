@@ -291,3 +291,5 @@
 (node-template 'bng-node bng)
 (node-template 'tgl-node tgl)
 (node-template 'cnv-node cnv)
+(node-template 'vsl-node vsl)
+(node-template 'hsl-node hsl)

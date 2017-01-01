@@ -55,7 +55,9 @@
 
 ;; 2) auto layouter
 (pdx:with-patch
-    ("auto-layouter.pd")
+    ("auto-layouter.pd"
+     :width 200
+     :height 200)
   (pd::print "result"
              (pd::+ (pd::msg 1)
                     (pd::msg 2)))) ; connections are laid out by a primitive auto-layouter (so you can still figure out what's going on).
@@ -102,7 +104,8 @@
      :graph-on-parent t               ; use the view box.
      :hide-object-name nil            ; hide patch and object names in parent patch.
      )
-  (pd::text "this is above me."))
+  (pd::text "this is above me.")
+  (pd::text :x 20 :y 20 "this is below me."))
 
 ;; 5) extras
 (pdx:with-patch

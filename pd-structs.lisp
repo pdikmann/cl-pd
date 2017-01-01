@@ -11,6 +11,8 @@
            :bng-node
            :tgl-node
            :cnv-node
+           :vsl-node
+           :hsl-node
            ;; from node
            :node-p
            :node-name
@@ -123,6 +125,24 @@
    (height      :initarg :height      :initform 60)
    (unknown :initform 0)))
 
+(defclass slider-node (ui-node)
+  ((width           :initarg :width           :initform nil)
+   (height          :initarg :height          :initform nil)
+   (bottom          :initarg :bottom          :initform 0)
+   (top             :initarg :top             :initform 127)
+   (log             :initarg :log             :initform 0)
+   (init            :initarg :init            :initform 0)
+   (default         :initarg :default         :initform 0) ; default means: saved slider position, in pixels.
+   (steady-on-click :initarg :steady-on-click :initform 1)))
+
+(defclass vsl-node (slider-node)
+  ((width :initform 15)
+   (height :initform 127)))
+
+(defclass hsl-node (slider-node)
+  ((width :initform 127)
+   (height :initform 15)))
+
 ;; --------------------------------------------------------------------------------
 ;; templating
 ;; 
@@ -157,7 +177,8 @@
   (fill-template '("#X obj" x y init-args) n))
 
 (defmethod write-node ((n bng-node))
-  (fill-template '("#X obj" x y name ;"bng"
+  (fill-template '("#X obj" x y
+                   name                 ; "bng"
                    size
                    hold interrupt
                    init
@@ -169,7 +190,8 @@
                  n))
 
 (defmethod write-node ((n tgl-node))
-  (fill-template '("#X obj" x y name ;"tgl"
+  (fill-template '("#X obj" x y
+                   name                 ; "tgl"
                    size
                    init
                    send-symbol receive-symbol
@@ -181,7 +203,8 @@
                  n))
 
 (defmethod write-node ((n cnv-node))
-  (fill-template '("#X obj" x y name ;"cnv"
+  (fill-template '("#X obj" x y
+                   name                 ; "cnv"
                    size
                    width height
                    send-symbol receive-symbol
@@ -190,6 +213,23 @@
                    font-family font-size
                    bg-color label-color
                    unknown)
+                 n))
+
+(defmethod write-node ((n slider-node))
+  (fill-template '("#X obj" x y
+                   name                 ; "hsl" or "vsl"
+                   width height
+                   bottom top
+                   log
+                   init
+                   send-symbol
+                   receive-symbol
+                   label-text
+                   label-x label-y
+                   font-family font-size
+                   bg-color fg-color label-color
+                   default steady-on-click
+                   )
                  n))
 
 ;; --------------------------------------------------------------------------------
