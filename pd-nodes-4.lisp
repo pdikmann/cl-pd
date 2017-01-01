@@ -17,10 +17,10 @@
                        ;(format nil "found is ~a" found)
                        (princ (subseq sequence 0 found) out)
                        (princ new out)
-                       (princ (fn old new
-                                  (subseq sequence 
-                                          (+ found
-                                             (length old))))))
+                       (fn old new
+                           (subseq sequence 
+                                   (+ found
+                                      (length old)))))
                      (princ sequence out)))))
       (fn old new sequence))
     out))
