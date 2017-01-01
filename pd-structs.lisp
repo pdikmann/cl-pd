@@ -7,6 +7,7 @@
            :object-node
            :self-node
            :patch-node
+           :floatatom-node
            :ui-node
            :bng-node
            :tgl-node
@@ -93,6 +94,15 @@
 
 (defclass patch-node (object-node) ())
 
+(defclass floatatom-node (node)
+  ((send-symbol    :initarg :send      :initform "-")
+   (receive-symbol :initarg :receive   :initform "-")
+   (label-text     :initarg :label     :initform "-")
+   (label-pos      :initarg :label-pos :initform 0)
+   (width          :initarg :width     :initform 5) ; width means number of digits shown.
+   (lower-limit    :initarg :lower     :initform 0)
+   (upper-limit    :initarg :upper     :initform 0)))
+
 (defclass ui-node (node)
   ((send-symbol    :accessor node-send-symbol    :initarg :send        :initform "empty")
    (receive-symbol :accessor node-receive-symbol :initarg :receive     :initform "empty")
@@ -176,9 +186,21 @@
 (defmethod write-node ((n patch-node))
   (fill-template '("#X obj" x y init-args) n))
 
+(defmethod write-node ((n floatatom-node))
+  (fill-template '("#X floatatom"
+                   x y
+                   width
+                   lower-limit upper-limit
+                   label-pos
+                   label-text
+                   receive-symbol
+                   send-symbol)
+                 n))
+
 (defmethod write-node ((n bng-node))
-  (fill-template '("#X obj" x y
-                   name                 ; "bng"
+  (fill-template '("#X obj"
+                   x y
+                   name ; "bng" ; FIXME remove variable if only ever used with "bng"
                    size
                    hold interrupt
                    init
