@@ -49,7 +49,7 @@
        (let ((n (apply #'make-instance
                        ,type
                        :name (format nil "~(~a~)" ',name)
-                       keys)))
+                       (escape-string-args keys))))
          (apply #'connect n (escape-string-args args))
          (add-node n)
          n))))
