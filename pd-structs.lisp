@@ -8,6 +8,7 @@
            :self-node
            :patch-node
            :floatatom-node
+           :symbolatom-node
            :ui-node
            :bng-node
            :tgl-node
@@ -94,7 +95,7 @@
 
 (defclass patch-node (object-node) ())
 
-(defclass floatatom-node (node)
+(defclass atom-node (node)
   ((send-symbol    :initarg :send      :initform "-")
    (receive-symbol :initarg :receive   :initform "-")
    (label-text     :initarg :label     :initform "-")
@@ -102,6 +103,12 @@
    (width          :initarg :width     :initform 5) ; width means number of digits shown.
    (lower-limit    :initarg :lower     :initform 0)
    (upper-limit    :initarg :upper     :initform 0)))
+
+(defclass floatatom-node (atom-node)
+  ((width :initarg width :initform 5)))
+
+(defclass symbolatom-node (atom-node)
+  ((width :initarg width :initform 10)))
 
 (defclass ui-node (node)
   ((send-symbol    :accessor node-send-symbol    :initarg :send        :initform "empty")
@@ -168,7 +175,7 @@
                        n
                        (concatenate 'string
                                     s
-                                    " "
+                                    (if s " " "")
                                     (to-string
                                      (if (symbolp arg)
                                          (slot-value n arg)
@@ -186,8 +193,9 @@
 (defmethod write-node ((n patch-node))
   (fill-template '("#X obj" x y init-args) n))
 
-(defmethod write-node ((n floatatom-node))
-  (fill-template '("#X floatatom"
+(defmethod write-node ((n atom-node))
+  (fill-template '("#X"
+                   name ; floatatom or symbolatom
                    x y
                    width
                    lower-limit upper-limit

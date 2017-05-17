@@ -290,6 +290,7 @@
 (node-template 'self-node text)
 (node-template 'patch-node patch)
 (node-template 'floatatom-node floatatom)
+(node-template 'symbolatom-node symbolatom)
 (node-template 'bng-node bng)
 (node-template 'tgl-node tgl)
 (node-template 'cnv-node cnv)
