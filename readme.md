@@ -16,12 +16,15 @@ col1 | col2
 (pdx:with-patch             ; with-patch writes a file.
     ("basic-usage.pd")      ; these are options, e.g. file name.
   (pd::text "hello world")) ; all nodes are accessible in the pd package. use pd::node because some overwrite/shadow cl-user (e.g. list).
-```
-| other content
+``` | other content
 
-![Basic Usage](https://pdikmann.github.io/cl-pd/basic-usage.png)
-[Basic Usage 2](https://pdikmann.github.io/cl-pd/basic-usage.png)
-[Basic Usage 3](docs/basic-usage.png)
+![basic-usage](https://pdikmann.github.io/cl-pd/basic-usage.png)
+![recursion](https://pdikmann.github.io/cl-pd/recursion.png)
+![extras](https://pdikmann.github.io/cl-pd/extras.png)
+![patch-options](https://pdikmann.github.io/cl-pd/patch-options.png)
+![node-arguments](https://pdikmann.github.io/cl-pd/node-arguments.png)
+![auto-layouter](https://pdikmann.github.io/cl-pd/auto-layouter.png)
+![basic-usage](https://pdikmann.github.io/cl-pd/basic-usage.png)
 
 # Roadmap
 
