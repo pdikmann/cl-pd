@@ -2,9 +2,9 @@
 
 Common Lisp helpers for generating PureData patches. WIP - please excuse the mess!
 
-Targeted at Pd 0.47.1
+Targeted at Pd 0.47.1, tested on SBCL 1.2.4.debian
 
-# Usage
+# Quick Start
 
 read and evaluate `usage.lisp`
 
@@ -13,7 +13,6 @@ read and evaluate `usage.lisp`
 ## Basic Usage
 
 ```lisp
-;; 1) basic usage
 (pdx:with-patch             ; with-patch writes a file.
     ("basic-usage.pd")      ; these are options, e.g. file name.
   (pd::text "hello world")) ; all nodes are accessible in the pd package. 
@@ -27,7 +26,6 @@ read and evaluate `usage.lisp`
 ## Auto-Layouter
 
 ```lisp
-;; 2) auto layouter
 (pdx:with-patch
     ("auto-layouter.pd"
      :width 200
@@ -45,7 +43,6 @@ read and evaluate `usage.lisp`
 ## Node Arguments
 
 ```lisp
-;; 3) node arguments
 (pdx:with-patch
     ("node-arguments.pd")
   (pd::route 1 2)                             ; numbers and strings are used as literal arguments, just like creating a node in pd.
@@ -85,7 +82,6 @@ read and evaluate `usage.lisp`
 ## Patch Options
 
 ```lisp
-;; 4) patch options
 (pdx:with-patch
     ("patch-options.pd"
      :width 320 :height 240           ; these are the window sizes.
@@ -106,7 +102,6 @@ read and evaluate `usage.lisp`
 ## Extras
 
 ```lisp
-;; 5) extras
 (pdx:with-patch
     ("extras.pd")
   (pd::bng :bg-color (pdx:color/file 255 0 255) ; initial colors (set at compile-time) are specified using pdx:color/file.
@@ -125,7 +120,6 @@ read and evaluate `usage.lisp`
 ## Tips / Tricks: Recursion
 
 ```lisp
-;; 6) tips and tricks: recursion
 (defun osc-tree (count)
   (if (= count 0)
       (pd::osc~ (random 1000))
@@ -149,7 +143,7 @@ read and evaluate `usage.lisp`
 - [X] add :x and :y keywords to object nodes for manual placement
 - [ ] add gui-nodes like sliders (hsl, vsl), bangs etc. pp. that have dozens of parameters
 - [ ] write a good tutorial/documentation (with pictures).
-- add the missing node types (in order of importance): 
+- [ ] add the missing node types (in order of importance): 
   - [ ] subpatches,
   - [ ] arrays & graphs, 
   - [x] floatatoms, 

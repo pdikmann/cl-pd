@@ -116,7 +116,7 @@
     (pd::dac~ tree tree)))
 
 ;; --------------------------------------------------------------------------------
-
+;; fun with recursion
 (defun detuned (freq)
   (pd::osc~
    (pd::+~
@@ -143,6 +143,8 @@
          (out (pd::*~ (/ 1.0 (length freqs)) (cascade (reverse freqs)))))
     (pd::dac~ out out)))
 
+;; --------------------------------------------------------------------------------
+;; testing colors
 (pdx::with-patch ("color-range.pd" :width 1040 :height 128)
   (mapcar (lambda (r x)
             (pd::bng :x x :y 0
@@ -166,6 +168,8 @@
              for x from 0 to 63
              collect (* x 16))))
 
+;; --------------------------------------------------------------------------------
+;; checking language verbosity, readability on slightly more complex patch
 (pdx:with-patch ("list-unwind.pd")
   ;; take list on inlet,
   ;; split list into single items,
@@ -185,6 +189,8 @@
     (pdx::connect buf nil (pdx::port 1 split))
     (pdx::connect split buf)))
 
+;; --------------------------------------------------------------------------------
+;; various miscellaneous things
 (pdx:with-patch ("test.pd" :graph-on-parent t
                            :view-width 300
                            :view-height 100
@@ -205,7 +211,7 @@
     (pd::outlet my-flt)
     (pd::cnv :x 0 :y 0 :width 500)      ; canvas
     (pd::+ :x 100 :y 0 123 456)         ; manual positioning
-    (pd::print "junk food"
+    (pd::print "food"
                (pd::bng :x 50 :y 50 :size 32
                         :interrupt 5 :hold 250))
     ))
