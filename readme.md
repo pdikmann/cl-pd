@@ -8,6 +8,17 @@ Targeted at Pd 0.47.1
 
 read and evaluate `usage.lisp`
 
+# Tutorial
+
+col1 | col2
+---|---
+```lisp
+(pdx:with-patch             ; with-patch writes a file.
+    ("basic-usage.pd")      ; these are options, e.g. file name.
+  (pd::text "hello world")) ; all nodes are accessible in the pd package. use pd::node because some overwrite/shadow cl-user (e.g. list).
+```
+| other content
+
 # Roadmap
 
 - [DONE] add :view-width and :view-height keywords to with-patch to enable graph-on-parent.
