@@ -10,7 +10,7 @@ read and evaluate `usage.lisp`
 
 # Tutorial
 
-![basic-usage](https://pdikmann.github.io/cl-pd/basic-usage.png)
+## Basic Usage
 
 ```lisp
 ;; 1) basic usage
@@ -21,9 +21,12 @@ read and evaluate `usage.lisp`
                             ; many PureData names would shadow core CL functions.)
 ```
 
-![auto-layouter](https://pdikmann.github.io/cl-pd/auto-layouter.png)
+![basic-usage](https://pdikmann.github.io/cl-pd/basic-usage.png)
 
-```common lisp
+
+## Auto-Layouter
+
+```lisp
 ;; 2) auto layouter
 (pdx:with-patch
     ("auto-layouter.pd"
@@ -35,9 +38,13 @@ read and evaluate `usage.lisp`
                                    ; (so you can still figure out what's going on).
 ```
 
-![node-arguments](https://pdikmann.github.io/cl-pd/node-arguments.png)
+![auto-layouter](https://pdikmann.github.io/cl-pd/auto-layouter.png)
 
-```
+----
+
+## Node Arguments
+
+```lisp
 ;; 3) node arguments
 (pdx:with-patch
     ("node-arguments.pd")
@@ -71,9 +78,13 @@ read and evaluate `usage.lisp`
   )
 ```
 
-![patch-options](https://pdikmann.github.io/cl-pd/patch-options.png)
+![node-arguments](https://pdikmann.github.io/cl-pd/node-arguments.png)
 
-```
+----
+
+## Patch Options
+
+```lisp
 ;; 4) patch options
 (pdx:with-patch
     ("patch-options.pd"
@@ -88,9 +99,13 @@ read and evaluate `usage.lisp`
   (pd::text :x 20 :y 20 "this is below me."))
 ```
 
-![extras](https://pdikmann.github.io/cl-pd/extras.png)
+![patch-options](https://pdikmann.github.io/cl-pd/patch-options.png)
 
-```
+----
+
+## Extras
+
+```lisp
 ;; 5) extras
 (pdx:with-patch
     ("extras.pd")
@@ -103,9 +118,13 @@ read and evaluate `usage.lisp`
            -1))
 ```
 
-![recursion](https://pdikmann.github.io/cl-pd/recursion.png)
+![extras](https://pdikmann.github.io/cl-pd/extras.png)
 
-```
+----
+
+## Tips / Tricks: Recursion
+
+```lisp
 ;; 6) tips and tricks: recursion
 (defun osc-tree (count)
   (if (= count 0)
@@ -118,6 +137,9 @@ read and evaluate `usage.lisp`
   (let ((tree (pd::*~ .1 (osc-tree 3))))
     (pd::dac~ tree tree)))
 ```
+
+![recursion](https://pdikmann.github.io/cl-pd/recursion.png)
+
 
 # Roadmap
 
