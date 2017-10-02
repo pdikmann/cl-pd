@@ -20,6 +20,8 @@ col1 | col2
 | other content
 
 ![Basic Usage](https://pdikmann.github.io/cl-pd/basic-usage.png)
+[Basic Usage 2](https://pdikmann.github.io/cl-pd/basic-usage.png)
+[Basic Usage 3](docs/basic-usage.png)
 
 # Roadmap
 
