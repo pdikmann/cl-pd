@@ -33,25 +33,11 @@
 ;;
 ;;  (hsl :width 100 :height 15 ...)
 
-;; --------------------------------------------------------------------------------
-
-;; tutorial
-;; ---
-;;
-;; short explanation
-;;
-;; table -----------------------
-;; | code example | patch image |
-;; -----------------------------
-;;
-;; rinse and repeat
-
-;; steps:
-
 ;; 1) basic usage
 (pdx:with-patch             ; with-patch writes a file.
     ("basic-usage.pd")      ; these are options, e.g. file name.
-  (pd::text "hello world")) ; all nodes are accessible in the pd package. use pd::node because some overwrite/shadow cl-user (e.g. list).
+  (pd::text "hello world")) ; all nodes are accessible in the pd package.
+                            ; (use of the "::"-qualifier is a workaround because many PureData names would shadow core CL functions (e.g. pd::list).)
 
 ;; 2) auto layouter
 (pdx:with-patch
