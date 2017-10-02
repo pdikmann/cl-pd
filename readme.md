@@ -12,13 +12,14 @@ read and evaluate `usage.lisp`
 
 col1 | col2
 ---|---
+![basic-usage](https://pdikmann.github.io/cl-pd/basic-usage.png)|
+
 ```lisp
 (pdx:with-patch             ; with-patch writes a file.
     ("basic-usage.pd")      ; these are options, e.g. file name.
   (pd::text "hello world")) ; all nodes are accessible in the pd package. use pd::node because some overwrite/shadow cl-user (e.g. list).
-``` | other content
+```
 
-![basic-usage](https://pdikmann.github.io/cl-pd/basic-usage.png)
 ![recursion](https://pdikmann.github.io/cl-pd/recursion.png)
 ![extras](https://pdikmann.github.io/cl-pd/extras.png)
 ![patch-options](https://pdikmann.github.io/cl-pd/patch-options.png)
